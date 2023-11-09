@@ -12,12 +12,12 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <aspectj.version>1.9.7</aspectj.version>
+        <aspectj.version>1.9.19</aspectj.version>
         <allure.version>2.24.0</allure.version>
     </properties>
 
     <dependencies>
-<!--        Подключаем junit 4-->
+        <!--Подключаем junit 4-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -25,14 +25,14 @@
             <scope>test</scope>
         </dependency>
 
-<!--        Подключаем rest assured-->
+        <!--Подключаем rest assured-->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>5.3.2</version>
         </dependency>
 
-<!--        Подключаем allure для отчетов-->
+        <!--Подключаем allure для отчетов-->
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-rest-assured</artifactId>
@@ -59,6 +59,9 @@
                     <version>2.22.2</version>
                     <configuration>
                         <testFailureIgnore>false</testFailureIgnore>
+                        <argLine>
+                            -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                        </argLine>
                         <properties>
                             <property>
                                 <name>listener</name>
@@ -72,6 +75,14 @@
                             </property>
                         </systemProperties>
                     </configuration>
+                    <dependencies>
+                        <!--Для отображения Step в allure-->
+                        <dependency>
+                            <groupId>org.aspectj</groupId>
+                            <artifactId>aspectjweaver</artifactId>
+                            <version>${aspectj.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>io.qameta.allure</groupId>
