@@ -35,6 +35,7 @@ public class TestBase {
     @Step("Создание пользователя")
     public Response createUser(User user) throws JsonProcessingException {
         return RestAssured.given(specification)
+                .when()
                 .body(mapper.writeValueAsString(user))
                 .post("/auth/register");
     }
