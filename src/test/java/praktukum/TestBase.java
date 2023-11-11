@@ -9,6 +9,8 @@ import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import praktukum.model.order.Order;
 import praktukum.model.user.User;
@@ -20,6 +22,20 @@ public class TestBase {
     private static final Parser PARSER = Parser.fromContentType("application/json;charset=utf-8");
     protected static RequestSpecification specification;
     protected static ObjectMapper mapper;
+
+    protected User user;
+    protected String accessToken;
+
+    @Before
+    public void init() throws JsonProcessingException {
+        user = new User(Constants.EMAIL, Constants.PASSWORD, Constants.NAME);
+        createUser(user);
+    }
+
+    @After
+    public void tearDown() throws JsonProcessingException {
+        deleteUser(accessToken);
+    }
 
     @BeforeClass
     @Step("Создание Request Specification и ObjectMapper'а")
