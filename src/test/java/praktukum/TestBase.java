@@ -10,6 +10,7 @@ import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.BeforeClass;
+import praktukum.model.order.Order;
 import praktukum.model.user.User;
 
 public class TestBase {
@@ -40,16 +41,13 @@ public class TestBase {
                 .post("/auth/register");
     }
 
-    @Step("Авторизация пользователя")
-    public Response login(User user) throws JsonProcessingException {
+    @Step("Обновление данных пользователя")
+    public Response updateUser(User user, String token) throws JsonProcessingException {
         return RestAssured.given(specification)
+                .when()
+                .header("Authorization", String.format("%s", token))
                 .body(mapper.writeValueAsString(user))
-                .post("/auth/login");
-    }
-
-    @Step("Выход пользователя из системы")
-    public Response logout() {
-        return null;
+                .patch("/auth/user");
     }
 
     @Step("Удаление пользователя")
@@ -57,5 +55,30 @@ public class TestBase {
         return RestAssured.given(specification)
                 .header("Authorization", String.format("%s", token))
                 .delete("/auth/user");
+    }
+
+    @Step("Авторизация пользователя")
+    public Response login(User user) throws JsonProcessingException {
+        return RestAssured.given(specification)
+                .when()
+                .body(mapper.writeValueAsString(user))
+                .post("/auth/login");
+    }
+
+    @Step("Создание заказа")
+    public Response createOrder(Order order, String token) throws JsonProcessingException {
+        return RestAssured.given(specification)
+                .when()
+                .header("Authorization", String.format("%s", token))
+                .body(mapper.writeValueAsString(order))
+                .post("/orders");
+    }
+
+    @Step("Получение списка заказов пользователя")
+    public Response getUserOrders(String token) {
+        return RestAssured.given(specification)
+                .when()
+                .header("Authorization", String.format("%s", token))
+                .get("/orders");
     }
 }

@@ -7,7 +7,7 @@ import io.restassured.response.Response;
 import org.junit.Assert;
 import org.junit.Test;
 import praktukum.model.user.User;
-import praktukum.model.user.ReturnedData;
+import praktukum.model.ReturnedData;
 
 @Epic("Тесты на создание пользователя")
 @DisplayName("Тесты на создание пользователя")
