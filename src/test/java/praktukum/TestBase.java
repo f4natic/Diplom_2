@@ -75,6 +75,7 @@ public class TestBase {
 
     @Step("Авторизация пользователя")
     public Response login(User user) throws JsonProcessingException {
+        String usrStr = mapper.writeValueAsString(user);
         return RestAssured.given(specification)
                 .when()
                 .body(mapper.writeValueAsString(user))
@@ -96,5 +97,12 @@ public class TestBase {
                 .when()
                 .header("Authorization", String.format("%s", token))
                 .get("/orders");
+    }
+
+    @Step("Получение списка ингредиентов")
+    public Response getIngredients() {
+        return RestAssured.given(specification)
+                .when()
+                .get("/ingredients");
     }
 }

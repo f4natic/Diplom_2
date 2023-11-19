@@ -4,29 +4,38 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.qameta.allure.Epic;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import praktukum.model.IngredientType;
 import praktukum.model.ReturnedData;
 import praktukum.model.order.Ingredient;
 import praktukum.model.order.Order;
-import praktukum.model.user.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Epic("Тесты на работу с заказами")
 @DisplayName("Тесты на работу с заказами")
 public class OrderTest extends TestBase {
+    private List<Ingredient> newIngredientList;
+
+    @Before
+    public void init() throws JsonProcessingException {
+        super.init();
+        newIngredientList = new ArrayList<>();
+        Response response = getIngredients();
+        List<Ingredient> ingredientsList = response.as(ReturnedData.class).getData();
+        newIngredientList.add(ingredientsList.stream().filter(ingredient -> ingredient.getType().equals(IngredientType.BUN.getType())).findFirst().get());
+        newIngredientList.add(ingredientsList.stream().filter(ingredient -> ingredient.getType().equals(IngredientType.MAIN.getType())).findFirst().get());
+        newIngredientList.add(ingredientsList.stream().filter(ingredient -> ingredient.getType().equals(IngredientType.SOUCE.getType())).findFirst().get());
+    }
 
     @Test
     @DisplayName("Создание заказа неавторизованным пользователем")
     public void shouldCreateOrderOnNonAuthorizedUser() throws JsonProcessingException {
-        List<Ingredient> ingredientsList = List.of(new Ingredient("61c0c5a71d1f82001bdaaa76"),
-                new Ingredient("61c0c5a71d1f82001bdaaa79"),
-                new Ingredient("61c0c5a71d1f82001bdaaa72"),
-                new Ingredient("61c0c5a71d1f82001bdaaa6d"));
-        Order order = new Order(ingredientsList);
+
+        Order order = new Order(newIngredientList);
         Response response = createOrder(order, null);
         response.then().assertThat().statusCode(200);
         ReturnedData returnedData = response.as(ReturnedData.class);
@@ -40,12 +49,7 @@ public class OrderTest extends TestBase {
     @DisplayName("Создание заказа авторизованным пользователем")
     public void shouldCreateOrderOnAuthorizedUser() throws JsonProcessingException {
         accessToken = login(user).as(ReturnedData.class).getAccessToken();
-        List<Ingredient> ingredientsList = List.of(
-                new Ingredient("61c0c5a71d1f82001bdaaa76"),
-                new Ingredient("61c0c5a71d1f82001bdaaa79"),
-                new Ingredient("61c0c5a71d1f82001bdaaa72"),
-                new Ingredient("61c0c5a71d1f82001bdaaa6d"));
-        Order order = new Order(ingredientsList);
+        Order order = new Order(newIngredientList);
         Response response = createOrder(order, accessToken);
         response.then().assertThat().statusCode(200);
         ReturnedData returnedData = response.as(ReturnedData.class);

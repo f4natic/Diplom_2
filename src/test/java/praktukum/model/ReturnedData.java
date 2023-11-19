@@ -1,5 +1,6 @@
 package praktukum.model;
 
+import praktukum.model.order.Ingredient;
 import praktukum.model.order.Order;
 import praktukum.model.user.User;
 
@@ -14,7 +15,7 @@ public class ReturnedData {
     private Order order;
     private List<Order> orders;
     private String message;
-
+    private List<Ingredient> data;
     private Integer total;
     private Integer totalToday;
 
@@ -22,8 +23,9 @@ public class ReturnedData {
     }
 
     public ReturnedData(Boolean success, String accessToken, String refreshToken,
-                        User user, String name, Order order, List<Order> orders,
-                        String message, Integer total, Integer totalToday) {
+                        User user, String name, Order order,
+                        List<Order> orders, String message, List<Ingredient> data,
+                        Integer total, Integer totalToday) {
         this.success = success;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
@@ -32,6 +34,7 @@ public class ReturnedData {
         this.order = order;
         this.orders = orders;
         this.message = message;
+        this.data = data;
         this.total = total;
         this.totalToday = totalToday;
     }
@@ -98,6 +101,14 @@ public class ReturnedData {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public List<Ingredient> getData() {
+        return data;
+    }
+
+    public void setData(List<Ingredient> data) {
+        this.data = data;
     }
 
     public Integer getTotal() {
